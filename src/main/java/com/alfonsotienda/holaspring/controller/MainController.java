@@ -1,9 +1,11 @@
 package com.alfonsotienda.holaspring.controller;
 
+import com.alfonsotienda.holaspring.model.Factura;
 import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 
 import org.aspectj.apache.bcel.classfile.Module.Require;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,16 +16,37 @@ import org.springframework.web.servlet.ModelAndView;
 
 /**
  * MainController
+ * 
+ * @param <FacturaRepository>
  */
 
 @Controller
-public class MainController {
+public class MainController<FacturaRepository> {
 
     @GetMapping("/")
     @ResponseBody
     public String holaMundo(@RequestParam("nombre") String name, @RequestParam("edad") Integer edad) {
-        return "Hola " + name + " tienes " + edad + "años";
+        return "Holad " + name + " tienes " + edad + "años";
     }
+
+    @Autowired
+    FacturaRepository FacturaRepository;
+
+    @GetMapping("/creafactura")
+    @ResponseBody
+    public ResponseEntity creaFactura(
+        @RequestParam("fecha") String fecha,
+        @RequestParam("id") Integer id,
+        @RequestParam("total") Double total 
+     ) {
+        Factura factura = new Factura();
+        factura.setFecha(fecha);
+        factura.setId(id); 
+        factura.setTotal(total);
+        FacturaRepository.save(factura);
+
+        return null;
+       }
 
     @GetMapping("/ingles")
     @ResponseBody
